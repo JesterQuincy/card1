@@ -1,0 +1,84 @@
+<?php
+$num = "не определено";
+
+if(isset($_POST["num"])){
+
+    $num_ = $_POST["num"];
+    $num=str_replace(' ', '', trim($num_));
+
+}
+function Luhn($number, $iterations = 1)
+{
+    while ($iterations-- >= 1)
+    {
+        $stack = 0;
+        $parity = strlen($number) % 2;
+        $number = str_split($number, 1);
+
+        foreach ($number as $key => $value)
+        {
+            if ($key % 2 == $parity)
+            {
+                $value *= 2;
+
+                if ($value > 9)
+                {
+                    $value -= 9;
+                }
+            }
+
+            $stack += $value;
+        }
+
+        $stack = 10 - $stack % 10;
+
+        if ($stack == 10)
+        {
+            $stack = 0;
+        }
+
+        $number[] = $stack;
+    }
+
+    return implode('', $number);
+}
+function check_cc($cc, $extra_check = false){
+    $cards = array(
+        "visa" => "(4\d{12}(?:\d{3})?)",
+        "amex" => "(3[47]\d{13})",
+        "jcb" => "(35[2-8][89]\d\d\d{10})",
+        "maestro" => "((?:5020|5038|6304|6579|6761)\d{12}(?:\d\d)?)",
+        "solo" => "((?:6334|6767)\d{12}(?:\d\d)?\d?)",
+        "mastercard" => "(5[1-5]\d{14})",
+        "switch" => "(?:(?:(?:4903|4905|4911|4936|6333|6759)\d{12})|(?:(?:564182|633110)\d{10})(\d\d)?\d?)",
+    );
+    $names = array("Visa", "American Express", "JCB", "Maestro", "Solo", "Mastercard", "Switch");
+    $matches = array();
+    $pattern = "#^(?:".implode("|", $cards).")$#";
+    $result = preg_match($pattern, str_replace(" ", "", $cc), $matches);
+    if($extra_check && $result > 0){
+        $result = (validatecard($cc))?1:0;
+    }
+    return ($result>0)?$names[sizeof($matches)-2]:false;
+}
+$s=Luhn($num);
+
+$card=check_cc($num);
+if ($card==false){
+    $js= "Название эмитета не определено ";
+}
+if ((($s * 9) % 10)==0){
+    echo "Валидная ";
+}
+if ((($s * 9) % 10)!=0){
+    echo "Невалидная ";
+}
+echo " Номер карты: $num - $card";
+if ($card==false){
+    $js= "Название эмитета не определено ";
+    echo " $js";
+}
+
+
+
+?>
