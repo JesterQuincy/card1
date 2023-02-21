@@ -1,4 +1,5 @@
 <?php
+
 $num = "не определено";
 
 if(isset($_POST["num"])){
@@ -7,40 +8,38 @@ if(isset($_POST["num"])){
     $num=str_replace(' ', '', trim($num_));
 
 }
-function Luhn($number, $iterations = 1)
+class CValidator
 {
-    while ($iterations-- >= 1)
+    public static function validate($number, $iterations = 1)
     {
-        $stack = 0;
-        $parity = strlen($number) % 2;
-        $number = str_split($number, 1);
+        while ($iterations-- >= 1) {
+            $stack = 0;
+            $parity = strlen($number) % 2;
+            $number = str_split($number, 1);
 
-        foreach ($number as $key => $value)
-        {
-            if ($key % 2 == $parity)
-            {
-                $value *= 2;
+            foreach ($number as $key => $value) {
+                if ($key % 2 == $parity) {
+                    $value *= 2;
 
-                if ($value > 9)
-                {
-                    $value -= 9;
+                    if ($value > 9) {
+                        $value -= 9;
+                    }
                 }
+
+                $stack += $value;
             }
 
-            $stack += $value;
+            $stack = 10 - $stack % 10;
+
+            if ($stack == 10) {
+                $stack = 0;
+            }
+
+            $number[] = $stack;
         }
 
-        $stack = 10 - $stack % 10;
-
-        if ($stack == 10)
-        {
-            $stack = 0;
-        }
-
-        $number[] = $stack;
+        return implode('', $number);
     }
-
-    return implode('', $number);
 }
 function check_cc($cc, $extra_check = false){
     $cards = array(
@@ -61,23 +60,23 @@ function check_cc($cc, $extra_check = false){
     }
     return ($result>0)?$names[sizeof($matches)-2]:false;
 }
-$s=Luhn($num);
+$s=CValidator::validate($num);
 
 $card=check_cc($num);
-if ($card==false){
-    $js= "Название эмитета не определено ";
+    if ((($s * 9) % 10)==0){
+        echo "Валидная ";
+    }
+    else{
+        echo "Невалидная ";
+
 }
-if ((($s * 9) % 10)==0){
-    echo "Валидная ";
-}
-if ((($s * 9) % 10)!=0){
-    echo "Невалидная ";
-}
+
 echo " Номер карты: $num - $card";
 if ($card==false){
     $js= "Название эмитета не определено ";
     echo " $js";
 }
+
 
 
 
