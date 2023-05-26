@@ -1,3 +1,3 @@
-### Валидация и определение платежной системы банковско  карты
+### Валидация и определение платежной системы банковской карты
 ## https://drive.google.com/file/d/1iQkzG-sDFsMSvTWXwdIzjAvbfWRAOMER/edit
 
